@@ -10,15 +10,12 @@ var s = window.location.toString();
 var s1 = s.substr(7, s.length);
 var s2 = s1.indexOf("/");
 s = s.substr(0, 8 + s2);
+// var a = "http://192.168.238.128:11000/api";//获取连接前缀相当于 http://localhost:8081/
 var a = "http://localhost:11000/api";//获取连接前缀相当于 http://localhost:8081/
 
 //配置默认前缀
 axios.defaults.baseURL = a
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-axios.defaults.headers.post['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS';
-axios.defaults.headers.post['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token';
-axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpReques';
 
 //配置前置拦截
 axios.interceptors.request.use(config => {
@@ -30,19 +27,19 @@ axios.interceptors.response.use(response => {
   let res = response.data;
   console.log(res);
   // eslint-disable-next-line no-constant-condition
-  if (res.code == 200 || res.code == 555) {
+  if (res.code == 200) {
     return response
   } else {
-    Element.Message.error(res.msg, { duration: 2 * 1000 })
+    Element.Message.error(res.message, { duration: 2 * 1000 })
     //返回一个异常提示就不会继续往下走了 不+的话 res=>的里面 还是会继续走的
-    return Promise.reject(response.data.msg)
+    return Promise.reject(response.data.message)
   }
   // 捕获并处理后台异常信息
 }, error => {
   // 使得异常信息更加友好
   console.log("error : ", error)
-  if (error.response.msg) { //data不为空时
-    error.message = error.response.data.msg
+  if (error.response.message) { //data不为空时
+    error.message = error.response.data.message
     console.log("-------------------------")
     console.log(error.message)
     console.log("-------------------------")
